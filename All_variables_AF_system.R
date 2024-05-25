@@ -93,14 +93,12 @@ AF_benefit <- function(x, varnames)
     chance_event(chance = chance_market_crash,
                  value_if = market_fluc,
                  value_if_not = no_market_fluc) # 10% chance that the event will occur and 
-                                                #result in use the value from vv function
+  #result in use the value from vv function
   AF_chance_market_fluc <-
     chance_event(chance = chance_market_crash,
                  value_if = market_fluc,
                  value_if_not = no_market_fluc) #value_if_not = 1) # 10% chance that the event will occur and 
-                                                #result in use the value from vv function
-  # Arable system is managed with crop rotation of einkorn(CCM)-Wheat-dinkel
-  #one crop is grown once every 4 years
+  #result in use the value from vv function
   
   #Define each variable as a vector of "n_years" elements. N_years corresponds to the length of the simulation in years. Here: n_years = 30 years
   # define indices that are part of annual arable production
@@ -134,10 +132,22 @@ AF_benefit <- function(x, varnames)
   Treeless_einkorn_sowing_cost <- rep(0, n_years)
   Treeless_wheat_sowing_cost <- rep(0, n_years)
   Treeless_dinkel_sowing_cost <- rep(0, n_years)
-
+  
+  # Treeless_einkorn_fertilizer_cost <- rep(0, n_years)
+  # Treeless_wheat_fertilizer_cost <- rep(0, n_years)
+  # Treeless_dinkel_fertilizer_cost <- rep(0, n_years)
+  # 
+  # Treeless_einkorn_pesticide_cost <- rep(0, n_years)
+  # Treeless_wheat_pesticide_cost <- rep(0, n_years)
+  # Treeless_dinkel_pesticide_cost <- rep(0, n_years)
+  
   Treeless_einkorn_machinery_cost <- rep(0, n_years)
   Treeless_wheat_machinery_cost <- rep(0, n_years)
   Treeless_dinkel_machinery_cost <- rep(0, n_years)
+  
+  # Treeless_einkorn_insurance_cost <- rep(0, n_years)
+  # Treeless_wheat_insurance_cost <- rep(0, n_years)
+  # Treeless_dinkel_insurance_cost <- rep(0, n_years)
   
   Treeless_einkorn_labour_cost <- rep(0, n_years)
   Treeless_wheat_labour_cost <- rep(0, n_years)
@@ -148,48 +158,72 @@ AF_benefit <- function(x, varnames)
   #einkorn
   Treeless_einkorn_sowing_cost[einkorn_indices] <-vv(einkorn_seed_price, cv_einkorn_seed_price, 
                                                      length(einkorn_indices)) * arable_area_treeless 
-                                                #cost of seed [€/ha]*area managed [ha]
-  
+  #cost of seed [€/ha]*area managed [ha]
+  # Treeless_einkorn_fertilizer_cost[einkorn_indices] <- vv(einkorn_fert_price, cv_einkorn_fert_price,
+  #                                                         length(einkorn_indices)) * arable_area_treeless 
+  #                                               #cost of fertilizer [€/ha]*area managed [ha]
+  # Treeless_einkorn_pesticide_cost[einkorn_indices] <- vv(einkorn_cides_price, cv_einkorn_cides_price,
+  #                                                        length(einkorn_indices)) * arable_area_treeless 
+  #                                               #cost of pesticides [€/ha]*area managed [ha]
   Treeless_einkorn_machinery_cost[einkorn_indices] <- vv(einkorn_mach_price, cv_einkorn_mach_price, 
                                                          length(einkorn_indices)) * arable_area_treeless 
-                                                        #cost of machinery [€/ha]*area managed [ha]
-  
+  #cost of machinery [€/ha]*area managed [ha]
+  # Treeless_einkorn_insurance_cost[einkorn_indices] <- vv(einkorn_insurance, cv_einkorn_insurance, 
+  #                                                        length(einkorn_indices)) * arable_area_treeless 
+  #                                                       #cost of insurance [€/ha]*area managed [ha]
   Treeless_einkorn_labour_cost <- einkorn_labour * arable_area_treeless * Labour_costs 
-    #Labour cost associated with einkorn cultivation in treeless arable system
+  #Labour cost associated with einkorn cultivation in treeless arable system
   
   Treeless_total_einkorn_cost <- Treeless_einkorn_sowing_cost + 
-    Treeless_einkorn_machinery_cost + Treeless_einkorn_labour_cost 
+    Treeless_einkorn_machinery_cost + Treeless_einkorn_labour_cost #Treeless_einkorn_fertilizer_cost + 
+  #Treeless_einkorn_pesticide_cost + Treeless_einkorn_insurance_cost 
   
   #wheat
   Treeless_wheat_sowing_cost[wheat_indices] <- vv(wheat_seed_price, cv_wheat_seed_price, 
                                                   length(wheat_indices)) * arable_area_treeless 
-                                                #cost of seed [€/ha]*area managed [ha]
-  
+  #cost of seed [€/ha]*area managed [ha]
+  # Treeless_wheat_fertilizer_cost[wheat_indices] <- vv(wheat_fert_price, cv_wheat_fert_price, 
+  #                                                     length(wheat_indices)) * arable_area_treeless 
+  #                                             #cost of fertilizer [€/ha]*area managed [ha]
+  # Treeless_wheat_pesticide_cost[wheat_indices] <- vv(wheat_cides_price, cv_wheat_cides_price, 
+  #                                                    length(wheat_indices)) * arable_area_treeless 
+  #                                             #cost of pesticides [€/ha]*area managed [ha]
   Treeless_wheat_machinery_cost[wheat_indices] <- vv(wheat_mach_price, cv_wheat_mach_price, 
                                                      length(wheat_indices)) * arable_area_treeless 
-                                              #cost of machinery [€/ha]*area managed [ha]
+  #cost of machinery [€/ha]*area managed [ha]
+  # Treeless_wheat_insurance_cost[wheat_indices] <- vv(wheat_insurance, cv_wheat_insurance, 
+  #                                                    length(wheat_indices)) * arable_area_treeless 
+  #                                             #cost of insurance [€/ha]*area managed [ha]
   Treeless_wheat_labour_cost <- Wheat_labour * arable_area_treeless * Labour_costs 
-                                            #Labour cost associated with wheat cultivation in treeless system
+  #Labour cost associated with wheat cultivation in treeless system
   
   Treeless_total_wheat_cost <- Treeless_wheat_sowing_cost + 
-    Treeless_wheat_machinery_cost + Treeless_wheat_labour_cost
+    Treeless_wheat_machinery_cost + Treeless_wheat_labour_cost #+ Treeless_wheat_insurance_cost Treeless_wheat_fertilizer_cost + Treeless_wheat_pesticide_cost + 
   
   #dinkel
   Treeless_dinkel_sowing_cost[dinkel_indices] <- vv(dinkel_seed_price, cv_dinkel_seed_price,
                                                     length(dinkel_indices)) * arable_area_treeless #cost of seed [€/ha]*area managed [ha]
-  
+  # Treeless_dinkel_fertilizer_cost[dinkel_indices] <- vv(dinkel_fert_price, cv_dinkel_fert_price, 
+  #                                                       length(dinkel_indices)) * arable_area_treeless #cost of fertilizer [€/ha]*area managed [ha]
+  # Treeless_dinkel_pesticide_cost[dinkel_indices] <- vv(dinkel_cides_price, cv_dinkel_cides_price,
+  #                                                      length(dinkel_indices)) * arable_area_treeless #cost of pesticides [€/ha]*area managed [ha]
   Treeless_dinkel_machinery_cost[dinkel_indices] <- vv(dinkel_mach_price, cv_dinkel_mach_price, 
                                                        length(dinkel_indices)) * arable_area_treeless #cost of machinery [€/ha]*area managed [ha]
-  
+  # Treeless_dinkel_insurance_cost[dinkel_indices] <- vv(dinkel_insurance, cv_dinkel_insurance, 
+  #                                                      length(dinkel_indices)) * arable_area_treeless #cost of insurance [€/ha]*area managed [ha]
   Treeless_dinkel_labour_cost <- dinkel_labour * arable_area_treeless * Labour_costs #Labour cost associated with dinkel cultivation in treeless system
   
   Treeless_total_dinkel_cost <- Treeless_dinkel_sowing_cost +
-    Treeless_dinkel_machinery_cost + Treeless_dinkel_labour_cost
+    Treeless_dinkel_machinery_cost + Treeless_dinkel_labour_cost #+Treeless_dinkel_insurance_cost + Treeless_dinkel_fertilizer_cost + Treeless_dinkel_pesticide_cost +
+  
   
   #Monoculture system benefits ####
   Treeless_einkorn_yield <- rep(0, n_years)
   Treeless_wheat_yield <- rep(0, n_years)
   Treeless_dinkel_yield <- rep(0, n_years)
+  
+  # Arable system is managed with crop rotation of einkorn(CCM)-Wheat-dinkel
+  #one crop is grown once every 4 years
   
   Treeless_einkorn_yield[einkorn_indices] <-
     vv(einkorn_yields, cv_einkorn_yield, length(einkorn_indices)) * arable_area_treeless 
@@ -219,17 +253,16 @@ AF_benefit <- function(x, varnames)
     vv(crop_pp_cost, var_CV = var_cv, n_years) * Treeless_dinkel_yield
   
   #Monoculture output: system bottom line####
-  # arable component 
+  #total benefit of arable component 
   Treeless_total_benefit <- Treeless_einkorn_benefit + Treeless_wheat_benefit + Treeless_dinkel_benefit
   
-  # Hail insurance per 1000€ market value - add insurance cost now as it depends 
-  #on the turnover of the farm 
+  # Hail insurance per 1000€ market value - add insurance cost now as it depends on the turnover of the farm 
   Treeless_insurance <- (Treeless_total_benefit * hail_insurance)/1000
   
   #total cost of arable component
   Treeless_total_arable_total_cost <- Treeless_total_einkorn_cost + Treeless_total_wheat_cost + 
     Treeless_total_dinkel_cost + PPcost_einkorn + PPcost_wheat + PPcost_dinkel + Treeless_insurance
-
+  
   Treeless_bottom_line_benefit <- (Treeless_total_benefit - Treeless_total_arable_total_cost) * 
     chance_market_fluc
   
@@ -251,22 +284,26 @@ AF_benefit <- function(x, varnames)
     Treeless_dinkel_benefit = Treeless_dinkel_benefit,
     Treeless_bottom_line_benefit = Treeless_bottom_line_benefit
   )
-  file_path_treeless <- "calculated_treeless_variables.csv" # Specify the file path to save the CSV
-  write.csv(results_treeless_df, file = file_path_treeless, row.names = FALSE) # Write the data frame to a CSV file
+  
+  # Specify the file path to save the CSV
+  file_path_treeless <- "calculated_treeless_variables.csv"
+  
+  # Write the data frame to a CSV file
+  write.csv(results_treeless_df, file = file_path_treeless, row.names = FALSE)
   
   
   #Agroforestry (AF) System ####
   #Calculating model parameters based on input table
   Arable_area_AF <- arable_area_treeless - tree_row_area
   #AF benefits ####
-    # herbaceous component - should be activated only if it is silvopastoral or agrisilvicultural system or 
+  # herbaceous component - should be activated only if it is silvopastoral or agrisilvicultural system or 
   # if farmer grows forage crop
   #AF_grass_yield <- rep(0, n_years)
   
   #Annual arable crop component
-    AF_einkorn_yield <- rep(0, n_years)
-    AF_wheat_yield <- rep(0, n_years)
-    AF_dinkel_yield <- rep(0, n_years)
+  AF_einkorn_yield <- rep(0, n_years)
+  AF_wheat_yield <- rep(0, n_years)
+  AF_dinkel_yield <- rep(0, n_years)
   
   # account for yield reduction due to shading and competition from trees 
   perc_yield_reduction <- gompertz_yield(
@@ -276,7 +313,9 @@ AF_benefit <- function(x, varnames)
     first_yield_estimate_percent = perc_max_first_reduction,
     second_yield_estimate_percent = perc_max_second_reduction,
     n_years = n_years)
-
+  #   var_CV = var_cv,
+  #   no_yield_before_first_estimate = TRUE
+  # )
   #Crop rotation in AF system
   AF_einkorn_yield[einkorn_indices] <-
     vv(AF_einkorn_yields, cv_einkorn_yield, length(einkorn_indices)) *(1 - perc_yield_reduction[einkorn_indices]) * 
@@ -296,10 +335,10 @@ AF_benefit <- function(x, varnames)
   
   AF_dinkel_benefit <- vv(dinkel_price, cv_dinkel_price, n_years) * AF_dinkel_yield
   
+  
   #Tree component - nuts in AF system
   AF_nuts_yield <- rep(0, n_years)
   ES3_subsidy <- rep(0, n_years)
-
   #Yield of one nut tree [kg/tree]
   AF_nuts_yield <- gompertz_yield(
     max_harvest = nuts_yield_max,
@@ -315,7 +354,6 @@ AF_benefit <- function(x, varnames)
   #Yield of all nut trees [kg] considering risks
   AF_tot_nuts_yield <-
     AF_nuts_yield * num_trees * AF_chance_perc_crop_fail * AF_chance_perc_weather_fail
-  
   #Calculate how many kg have nuts quality and can therefore be marketed at a higher price (Pack_nuts) and 
   #the rest are used for making oil
   Pc_pack_nuts <- vv(perc_pack_nuts, var_CV = var_cv, n_years) / 100
@@ -329,18 +367,28 @@ AF_benefit <- function(x, varnames)
   Oil_nuts_benefit <-
     vv(Oil_nuts_price, var_cv, n_years) * Oil_nuts_yield
   
-
+  #??? Timber production from one nut tree [kg/tree]
+  # timber yield in volume m3/ha/year length(timber_harvest_indices)
+  # AF_timber_yield <- gompertz_yield(max_harvest = tree_yield_max,
+  #                                  time_to_first_yield_estimate = time_to_first_timber,
+  #                                  time_to_second_yield_estimate = time_to_second_timber,
+  #                                  first_yield_estimate_percent = timber_yield_first,
+  #                                  second_yield_estimate_percent = timber_yield_second,
+  #                                  n_years=n_years,
+  #                                  var_CV = var_cv,
+  #                                  no_yield_before_first_estimate = TRUE)
+  
   # Timber yield function from Marcos 
   AF_timber_yield <- ontogenic_growth_gompertz(max_harvest = volume_target_rotation,
-                                                     time_to_first_yield_estimate = time_first_volume_est,
-                                                     time_to_second_yield_estimate = time_sec_volume_est,
-                                                     first_yield_estimate_percent = first_vol_rel_to_sec_est_perc,
-                                                     second_yield_estimate_percent = sec_volume_est_per,
-                                                     n_years = n_years,
-                                                     no_yield_before_first_estimate = FALSE)
+                                               time_to_first_yield_estimate = time_first_volume_est,
+                                               time_to_second_yield_estimate = time_sec_volume_est,
+                                               first_yield_estimate_percent = first_vol_rel_to_sec_est_perc,
+                                               second_yield_estimate_percent = sec_volume_est_per,
+                                               n_years = n_years,
+                                               no_yield_before_first_estimate = FALSE)
   #total timber yield considering risks
   AF_tot_timber_yield <- AF_timber_yield * tree_row_area * (AF_chance_perc_crop_fail * 
-    AF_chance_perc_weather_fail * AF_chance_timber_harvest_fail)
+                                                              AF_chance_perc_weather_fail * AF_chance_timber_harvest_fail)
   # percentage of prime and other quality timber yield
   Pc_prime_timber <- vv(perc_prime_timber, var_CV = var_cv, n_years)
   Prime_timber_yield <- AF_tot_timber_yield * Pc_prime_timber
@@ -363,12 +411,11 @@ AF_benefit <- function(x, varnames)
   #The benefits from timber are calculated by multiplying their yields by their respective prices
   # ????Assuming all trees will not be harvested at the same year rather every year after 25th year continuous income 
   timber_harvest_indices <- seq(from = 25, to = n_years)
-  Prime_timber_harvest_indices <- seq(from = 40, to = n_years) # takes more years to produce prime quality timber
   Prime_timber_benefit <- rep(0, n_years)
   Other_timber_benefit <- rep(0, n_years)
   
   Prime_timber_benefit[timber_harvest_indices] <-
-    vv(Prime_timber_price, var_cv, length(Prime_timber_harvest_indices)) * Prime_timber_yield[Prime_timber_harvest_indices]
+    vv(Prime_timber_price, var_cv, length(timber_harvest_indices)) * Prime_timber_yield[timber_harvest_indices]
   Bioenergy_timber_benefit <- 
     vv(bioenergy_timber_price, var_cv, n_years) * Bioenergy_timber_yield
   Other_timber_benefit [timber_harvest_indices]<-
@@ -387,20 +434,17 @@ AF_benefit <- function(x, varnames)
     var_CV = var_cv,
     no_yield_before_first_estimate = TRUE
   )
-  
-  C_benefit <- vv(pc_carbon_storage, var_cv, n_years) * 
-    AF_C_sequestration * arable_area_treeless
-  
+  C_benefit <- vv(pc_carbon_storage, var_cv, n_years) * AF_C_sequestration * arable_area_treeless
   GW_benefit <- vv(pc_ground_water_recharge, var_cv, n_years) * arable_area_treeless
-  
   erosion_control_benefit <- vv(soil_loss, var_cv, n_years) * 
     vv(pc_soil_loss, var_cv, n_years) * arable_area_treeless  
-  #pollinator_benefit yet to be added
+  #pollinator_benefit 
   
   Nonmarket_ES_benefit <-  Bioenergy_timber_benefit +
     C_benefit + GW_benefit + erosion_control_benefit
   
   # from Porter et al. 2009
+  
   #Nonmarket_ES_benefit <- vv(Nonmarket_ES_value, var_cv, n_years) * tree_row_area
   
   AF_tree_benefit <- Pack_nuts_benefit + Oil_nuts_benefit + 
@@ -408,7 +452,8 @@ AF_benefit <- function(x, varnames)
   #Subsidy in AF system
   ES3_subsidy[1:n_years] <- es3_subsidy * tree_row_area
   
-  #Agroforestry total benefit
+  
+  #Agroforestry output: system bottom line ####
   AF_farm_benefit <- AF_tree_benefit + AF_einkorn_benefit + AF_wheat_benefit + 
     AF_dinkel_benefit + ES3_subsidy 
   AF_total_benefit <- AF_tree_benefit + AF_einkorn_benefit + AF_wheat_benefit + 
@@ -416,10 +461,14 @@ AF_benefit <- function(x, varnames)
   
   #AF costs ####
   # Source: FE- farmer/practitioner estimate; EE- expert estimate
+  
   #Calculating costs - tree component ###
   
   #Implementation cost : define variables
+  
   AF_planning_cost <- rep(0, n_years) #FE;Invoice of service provider (planners/consultants), planning the AF system + measuring tree strips using GPS[€]
+  # AF_pruning_course <- rep(0, n_years) #FE;Costs of the pruning training of an employee [€]
+  # AF_gps_measuring <- rep(0, n_years) #First step of implementation: measuring tree strips using GPS[€]
   AF_dig_plant_holes <- rep(0, n_years) # FE; Second step of implementation: digging/drilling holes for the trees [€]
   AF_tree_cost <- rep(0, n_years) #FE; Cost per tree [€]
   AF_plant_tree_cost <- rep(0, n_years) #FE; Labour cost for planting one tree [€] -
@@ -444,8 +493,10 @@ AF_benefit <- function(x, varnames)
   
   #Planning and consulting
   AF_planning_cost[1] <-    planning_consulting + farmer_planning_time * Labour_costs[1]
+  #AF_pruning_course[1] <- pruning_course
   
   #Field prep
+  
   AF_dig_plant_holes[1] <- dig_planting_holes * Labour_costs[1]
   AF_tree_cost[1] <- tree_price * num_trees
   AF_plant_tree_cost[1] <- planting_trees * Labour_costs[1]
@@ -486,6 +537,7 @@ AF_benefit <- function(x, varnames)
   AF_timber_harvest[time_first_volume_est:n_years] <-
     vv(timber_harvest, var_CV = var_cv, length(time_first_volume_est:n_years)) # labour cost of harvesting timber
   
+  
   #Total cost of tree component in AF system
   AF_total_treerow_management_cost <- ES3_application + AF_pruning + AF_root_pruning + 
     AF_annual_irrigation_cost + AF_mowing_treerow + AF_nuts_harvest + AF_PPcost_nuts + AF_timber_harvest
@@ -497,50 +549,87 @@ AF_benefit <- function(x, varnames)
   AF_wheat_sowing_cost <- rep(0, n_years)
   AF_dinkel_sowing_cost <- rep(0, n_years)
   
-  #Cost for machinery used in arable crops 
-  #(includes fixed and variable cost but not the investment) [€]
+  # #Cost of fertilizer needed for arable crops [€]
+  # AF_einkorn_fertilizer_cost <- rep(0, n_years)
+  # AF_wheat_fertilizer_cost <- rep(0, n_years)
+  # AF_dinkel_fertilizer_cost <- rep(0, n_years)
+  # 
+  # #Cost of pesticides used in arable crops [€]
+  # AF_einkorn_pesticide_cost <- rep(0, n_years)
+  # AF_wheat_pesticide_cost <- rep(0, n_years)
+  # AF_dinkel_pesticide_cost <- rep(0, n_years)
+  
+  #Cost for machinery used in arable crops (includes fixed and variable cost but not the investment) [€]
   AF_einkorn_machinery_cost <- rep(0, n_years)
   AF_wheat_machinery_cost <- rep(0, n_years)
   AF_dinkel_machinery_cost <- rep(0, n_years)
-
+  
+  #Cost for hail insurance needed for arable crops [€]
+  # AF_einkorn_insurance_cost <- rep(0, n_years)
+  # AF_wheat_insurance_cost <- rep(0, n_years)
+  # AF_dinkel_insurance_cost <- rep(0, n_years)
+  
   #Cost of labour in arable cropping system [€]
   AF_einkorn_labour_cost <- rep(0, n_years)
   AF_wheat_labour_cost <- rep(0, n_years)
   AF_dinkel_labour_cost <- rep(0, n_years)
   
-  #Processing and packaging costs [€/t]
+  #the following (X-indices) represents the placement of each crop within the crop rotation, every fifth year the crop rotation repeats. This way the time frame over which the crop rotation will be simulated can be changed by changing the value of "n_years" in the input table
   AF_PPcost_einkorn <- rep(0, n_years)
   AF_PPcost_wheat <- rep(0, n_years)
   AF_PPcost_dinkel <- rep(0, n_years)
-  
   #einkorn
   AF_einkorn_sowing_cost[einkorn_indices] <-
     vv(einkorn_seed_price,
        cv_einkorn_seed_price,
        length(einkorn_indices)) * Arable_area_AF #cost of seed [€/ha]*area managed [ha]
   
+  # AF_einkorn_fertilizer_cost[einkorn_indices] <-
+  #   (vv(einkorn_fert_price,
+  #      cv_einkorn_fert_price,
+  #      length(einkorn_indices)) * af_fert_perc_reduction) * Arable_area_AF  #cost of fertilizer [€/ha]*
+  # #area managed [ha]* percentage fertilizer application reduced as a benefit of AF
+  # AF_einkorn_pesticide_cost[einkorn_indices] <-
+  #   vv(einkorn_cides_price,
+  #      cv_einkorn_cides_price,
+  #      length(einkorn_indices)) * Arable_area_AF #cost of pesticides [€/ha]*area managed [ha]
+  
   AF_einkorn_machinery_cost[einkorn_indices] <-
     vv(einkorn_mach_price,
        cv_einkorn_mach_price,
        length(einkorn_indices)) * Arable_area_AF #cost of machinery [€/ha]*area managed [ha]
-  
+  # AF_einkorn_insurance_cost[einkorn_indices] <-
+  #   vv(einkorn_insurance,
+  #      cv_einkorn_insurance,
+  #      length(einkorn_indices)) * Arable_area_AF #cost of insurance [€/ha]*area managed [ha]
   AF_einkorn_labour_cost <-
     (einkorn_labour * Labour_costs * Arable_area_AF) #einkorn_labour * (vv(extra_arable_time, var_cv, n_years) /  100))
-  
+  #Labour cost associated with einkorn cultivation. Total labour time is estimated to increase by 5-30% (extra_arable_time/100) due to more complicated navigation of machinery in AF system
   AF_PPcost_einkorn <-
-    vv(crop_pp_cost, var_CV = var_cv, n_years) * AF_einkorn_yield #processing and packaging costs per ton
+    vv(crop_pp_cost, var_CV = var_cv, n_years) * AF_einkorn_yield  #processing and packaging costs per ton
   
   AF_total_einkorn_cost <-
     AF_einkorn_sowing_cost + AF_einkorn_machinery_cost + 
-    AF_einkorn_labour_cost + AF_PPcost_einkorn 
+    AF_einkorn_labour_cost + AF_PPcost_einkorn #+ AF_einkorn_insurance_cost AF_einkorn_fertilizer_cost + AF_einkorn_pesticide_cost + 
   
   #Wheat
   AF_wheat_sowing_cost[wheat_indices] <-
     vv(wheat_seed_price, cv_wheat_seed_price, length(wheat_indices)) * Arable_area_AF #cost of seed [€/ha]*area managed [ha]
-
+  
+  # AF_wheat_fertilizer_cost[wheat_indices] <-
+  #   vv(wheat_fert_price, cv_wheat_fert_price, length(wheat_indices)) * Arable_area_AF #cost of fertilizer [€/ha]*area managed [ha]
+  # 
+  # AF_wheat_pesticide_cost[wheat_indices] <-
+  #   vv(wheat_cides_price,
+  #      cv_wheat_cides_price,
+  #      length(wheat_indices)) * Arable_area_AF #cost of pesticides [€/ha]*area managed [ha]
+  
   AF_wheat_machinery_cost[wheat_indices] <-
     vv(wheat_mach_price, cv_wheat_mach_price, length(wheat_indices)) * Arable_area_AF #cost of machinery [€/ha]*area managed [ha]
-
+  
+  # AF_wheat_insurance_cost[wheat_indices] <-
+  #   vv(wheat_insurance, cv_wheat_insurance, length(wheat_indices)) * Arable_area_AF #cost of insurance [€/ha]*area managed [ha]
+  
   AF_wheat_labour_cost <-
     (Wheat_labour * Labour_costs * Arable_area_AF) #Wheat_labour * (vv(extra_arable_time, var_cv, n_years) /100)) #Labour cost associated with wheat cultivation
   AF_PPcost_wheat <-
@@ -556,10 +645,25 @@ AF_benefit <- function(x, varnames)
        cv_dinkel_seed_price,
        length(dinkel_indices)) * Arable_area_AF #cost of seed [€/ha]*area managed [ha]
   
+  # AF_dinkel_fertilizer_cost[dinkel_indices] <-
+  #   vv(dinkel_fert_price,
+  #      cv_dinkel_fert_price,
+  #      length(dinkel_indices)) * Arable_area_AF #cost of fertilizer [€/ha]*area managed [ha]
+  # 
+  # AF_dinkel_pesticide_cost[dinkel_indices] <-
+  #   vv(dinkel_cides_price,
+  #      cv_dinkel_cides_price,
+  #      length(dinkel_indices)) * Arable_area_AF #cost of pesticides [€/ha]*area managed [ha]
+  
   AF_dinkel_machinery_cost[dinkel_indices] <-
     vv(dinkel_mach_price,
        cv_dinkel_mach_price,
        length(dinkel_indices)) * Arable_area_AF #cost of machinery [€/ha]*area managed [ha]
+  
+  # AF_dinkel_insurance_cost[dinkel_indices] <-
+  #   vv(dinkel_insurance,
+  #      cv_dinkel_insurance,
+  #      length(dinkel_indices)) * Arable_area_AF #cost of insurance [€/ha]*area managed [ha]
   
   AF_dinkel_labour_cost <-
     (dinkel_labour * Labour_costs * Arable_area_AF) #dinkel_labour * (vv(extra_arable_time, var_cv, n_years) / 100))#Labour cost associated with dinkel cultivation
@@ -572,6 +676,7 @@ AF_benefit <- function(x, varnames)
   
   #Total cost of arable component in AF system
   AF_total_arable_management_cost <- AF_total_einkorn_cost + AF_total_wheat_cost + AF_total_dinkel_cost
+  
   #Total running cost of AF system
   AF_total_running_cost <- AF_total_treerow_management_cost + AF_total_arable_management_cost 
   # Hail insurance per 1000€ market value - add insurance cost now as it depends on the turnover of the farm 
@@ -579,7 +684,6 @@ AF_benefit <- function(x, varnames)
   #Total cost of AF system
   AF_total_cost <- AF_total_investment_cost + AF_total_running_cost + AF_insurance
   
-  #Agroforestry output: system bottomline####
   AF_bottom_line_benefit <- (AF_total_benefit - AF_total_cost)* AF_chance_market_fluc
   AF_bottom_line_benefit_farm <- (AF_farm_benefit - AF_total_cost)* AF_chance_market_fluc
   
@@ -612,9 +716,13 @@ AF_benefit <- function(x, varnames)
     AF_bottom_line_benefit = AF_bottom_line_benefit,
     AF_bottom_line_benefit_farm = AF_bottom_line_benefit_farm
   )
-  file_path_AF <- "calculated_AF_variables.csv"# Specify the file path to save the CSV
-  write.csv(results_AF_df, file = file_path_AF, row.names = FALSE)  # Write the data frame to a CSV file
-
+  
+  # Specify the file path to save the CSV
+  file_path_AF <- "calculated_AF_variables.csv"
+  
+  # Write the data frame to a CSV file
+  write.csv(results_AF_df, file = file_path_AF, row.names = FALSE)
+  
   #Calculating NPVs and Cash Flows####
   #AF System
   AF_NPV <- discount(AF_bottom_line_benefit, discount_rate=discount_rate,
@@ -632,9 +740,9 @@ AF_benefit <- function(x, varnames)
   
   #AF only farm-level without intangibles
   AF_NPV_farm <- discount(AF_bottom_line_benefit_farm, discount_rate=discount_rate,
-                     calculate_NPV = TRUE)#NVP of AF system
+                          calculate_NPV = TRUE)#NVP of AF system
   AF_cash_flow_farm <- discount(AF_bottom_line_benefit_farm,discount_rate=discount_rate,
-                           calculate_NPV = FALSE)#Cash flow of AF system
+                                calculate_NPV = FALSE)#Cash flow of AF system
   AF_cum_cash_flow_farm <- cumsum(AF_cash_flow) #Cumulative cash flow of AF system
   
   #Tradeoff (difference between AF system and treeless system)
@@ -644,15 +752,17 @@ AF_benefit <- function(x, varnames)
   NPV_tradeoff <- discount(Tradeoff_benefit, discount_rate = discount_rate,
                            calculate_NPV = TRUE )
   NPV_tradeoff_farm <- discount(Tradeoff_benefit_farm, discount_rate = discount_rate,
-                           calculate_NPV = TRUE )
+                                calculate_NPV = TRUE )
   CF_Tradeoff <- discount(Tradeoff_benefit, discount_rate = discount_rate,
                           calculate_NPV = FALSE )
   CF_Tradeoff_farm <- discount(Tradeoff_benefit_farm, discount_rate = discount_rate,
-                          calculate_NPV = FALSE )
+                               calculate_NPV = FALSE )
   Cum_CF_Tradeoff <- cumsum(CF_Tradeoff)
   Cum_CF_Tradeoff_farm <- cumsum(CF_Tradeoff_farm)
+  #In case needed add CREATING THE FUNDING SCENARIOS#######################################################################
   
   #Defining what output variables the following Monte Carlo Simulation should create #####
+  
   return(list(NPV_Agroforestry_System = AF_NPV,
               NPV_Treeless_System = NPV_treeless_system,
               NPV_AF_Farm_level = AF_NPV_farm,
@@ -665,19 +775,17 @@ AF_benefit <- function(x, varnames)
               Treelesscashflow = Treeless_cash_flow,
               Treelesscumcashflow = Treeless_cum_cash_flow
               #treeless costs#treeless benefits #AF costs #AF benefits
-              ))
+  ))
 }
 
-#Run the Monte Carlo analysis of the model
+#Run again the Monte Carlo analysis of the model
 mcSimulation_results <- mcSimulation(
   estimate = estimate_read_csv(fileName = "Input_table_R2.csv"),
   model_function = AF_benefit,
   numberOfModelRuns = 10000,
   functionSyntax = "plainNames")
-
 # PLOTS####
 # plot NPV distributions
-# AF with intangibles and Treeless
 plot_distributions(mcSimulation_object = mcSimulation_results, 
                    vars = c("NPV_Treeless_System", "NPV_Agroforestry_System"),
                    method = 'smooth_simple_overlay', 
@@ -692,7 +800,7 @@ ggsave(
   width = 5, 
   height = 3
 )
-# AF without intangibles and Treeless
+
 plot_distributions(mcSimulation_object = mcSimulation_results, 
                    vars = c("NPV_Treeless_System", "NPV_AF_Farm_level"),
                    method = 'smooth_simple_overlay', 
@@ -709,7 +817,7 @@ ggsave(
 )
 
 # boxplots of outcome distributions
-# AF with intangibles and Treeless
+
 decisionSupport::plot_distributions(mcSimulation_object = mcSimulation_results, 
                                     vars = c("NPV_Treeless_System","NPV_Agroforestry_System"),
                                     method = 'boxplot',
@@ -722,7 +830,7 @@ ggsave(
   width = 5, 
   height = 3
 )
-# AF without intangibles and Treeless
+
 decisionSupport::plot_distributions(mcSimulation_object = mcSimulation_results, 
                                     vars = c("NPV_Treeless_System","NPV_AF_Farm_level"),
                                     method = 'boxplot',
@@ -777,7 +885,7 @@ decisionSupport::plot_cashflow(
   color_25_75 = "navajowhite",
   color_5_95 = "green4",
   color_median = "darkblue"
-        )
+)
 ggsave(
   filename = "images/AnnualCashflow_AF.png",
   plot = last_plot(),
@@ -871,35 +979,33 @@ evpi <- multi_EVPI(mc = mcSimulation_table, first_out_var = "NPV_Agroforestry_Sy
 plot_evpi(evpi, decision_vars = "NPV_Agroforestry_System")
 
 #Projection to Latent Structures (PLS) analysis
-# AF with intangibles
-pls_result_AF <- plsr.mcSimulation(object = mcSimulation_results,
+pls_result <- plsr.mcSimulation(object = mcSimulation_results,
                                 resultName = names(mcSimulation_results$y)[1], ncomp = 1)
-plot_pls(pls_result_AF, input_table = input_file, cut_off_line = 1, threshold = 0.5)
+plot_pls(pls_result, input_table = input_file, cut_off_line = 1, threshold = 0.5)
 ggsave(
   filename = "images/PLS_VIP_AF.png",
   plot = last_plot(),
   width = 5, 
   height = 3
 )
-#treeless
-pls_result_treeless <- plsr.mcSimulation(object = mcSimulation_results,
-                                         resultName = names(mcSimulation_results$y)[2], ncomp = 1)
-plot_pls(pls_result_treeless, input_table = input_file, cut_off_line = 1, threshold = 0.5)
-ggsave(
-  filename = "images/PLS_VIP_Treeless.png",
-  plot = last_plot(),
-  width = 5, 
-  height = 3
-)
-#AF without intangibles
-pls_result_AF_farm <- plsr.mcSimulation(object = mcSimulation_results,
+#without intangibles
+pls_result <- plsr.mcSimulation(object = mcSimulation_results,
                                 resultName = names(mcSimulation_results$y)[3], ncomp = 1)
-plot_pls(pls_result_AF_farm, input_table = input_file, cut_off_line = 1, threshold = 0.5)
+plot_pls(pls_result, input_table = input_file, cut_off_line = 1, threshold = 0.5)
 ggsave(
   filename = "images/PLS_VIP_AF_farmlevel.png",
   plot = last_plot(),
   width = 5, 
   height = 3
 )
-
+#treeless
+pls_result <- plsr.mcSimulation(object = mcSimulation_results,
+                                resultName = names(mcSimulation_results$y)[2], ncomp = 1)
+plot_pls(pls_result, input_table = input_file, cut_off_line = 1, threshold = 0.8)
+ggsave(
+  filename = "images/PLS_VIP_Treeless.png",
+  plot = last_plot(),
+  width = 5, 
+  height = 3
+)
 #END!!!!##
