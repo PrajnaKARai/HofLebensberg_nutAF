@@ -1,6 +1,7 @@
-# Holistic decision analysis model of silvoarable nut syntropic agroforestry system of Hof Lebensberg ####
+# Holistic decision analysis model of silvoarable mixed nut syntropic agroforestry system of Hof Lebensberg ####
+
 # Scenario of changing silvoarable to silvopastoral is yet to be introduced
-# Institutional support as registered by the farmer to be introduced
+# Institutional support as registered by the farmer to be introduced; only ES3 implemented now
 
 # Packages needed ####
 install.packages("decisionSupport")
