@@ -1,7 +1,8 @@
 # Holistic decision analysis model of silvoarable mixed nut syntropic agroforestry system of Hof Lebensberg ####
-
+# 7.53 ha of 420 Hazelnut (Corylus avellana) trees, 208 Walnuts (Juglans spp.) trees, 183 Chestnut (Castanea sativa/Aesculus hippocastanum) trees, 68 Pecan (Carya illinoinensis) trees, 89 Cashewnuts (Anacardium occidentale) trees, 73 Almonds (Prunus dulcis) trees, and 23 Hickory 
 # Scenario of changing silvoarable to silvopastoral is yet to be introduced
 # Institutional support as registered by the farmer to be introduced; only ES3 implemented now
+# shrubs yet to be included
 
 # Packages needed ####
 install.packages("decisionSupport")
@@ -236,24 +237,24 @@ AF_benefit <- function(x, varnames)
   
   #CHECKPOINT!!
   # Create a data frame with the variables
-  results_treeless_df <- data.frame(
-    n_years = n_years,
-    Treeless_total_arable_total_cost= Treeless_total_arable_total_cost,
-    Treeless_total_einkorn_cost = Treeless_total_einkorn_cost,
-    Treeless_total_wheat_cost = Treeless_total_wheat_cost,
-    Treeless_total_dinkel_cost = Treeless_total_dinkel_cost,
-    PPcost_einkorn = PPcost_einkorn,
-    PPcost_wheat = PPcost_wheat,
-    PPcost_dinkel = PPcost_dinkel,
-    Treeless_insurance = Treeless_insurance,
-    Treeless_total_benefit = Treeless_total_benefit,
-    Treeless_einkorn_benefit = Treeless_einkorn_benefit,
-    Treeless_wheat_benefit = Treeless_wheat_benefit,
-    Treeless_dinkel_benefit = Treeless_dinkel_benefit,
-    Treeless_bottom_line_benefit = Treeless_bottom_line_benefit
-  )
-  file_path_treeless <- "calculated_treeless_variables.csv" # Specify the file path to save the CSV
-  write.csv(results_treeless_df, file = file_path_treeless, row.names = FALSE) # Write the data frame to a CSV file
+  # results_treeless_df <- data.frame(
+  #   n_years = n_years,
+  #   Treeless_total_arable_total_cost= Treeless_total_arable_total_cost,
+  #   Treeless_total_einkorn_cost = Treeless_total_einkorn_cost,
+  #   Treeless_total_wheat_cost = Treeless_total_wheat_cost,
+  #   Treeless_total_dinkel_cost = Treeless_total_dinkel_cost,
+  #   PPcost_einkorn = PPcost_einkorn,
+  #   PPcost_wheat = PPcost_wheat,
+  #   PPcost_dinkel = PPcost_dinkel,
+  #   Treeless_insurance = Treeless_insurance,
+  #   Treeless_total_benefit = Treeless_total_benefit,
+  #   Treeless_einkorn_benefit = Treeless_einkorn_benefit,
+  #   Treeless_wheat_benefit = Treeless_wheat_benefit,
+  #   Treeless_dinkel_benefit = Treeless_dinkel_benefit,
+  #   Treeless_bottom_line_benefit = Treeless_bottom_line_benefit
+  # )
+  # file_path_treeless <- "calculated_treeless_variables.csv" # Specify the file path to save the CSV
+  # write.csv(results_treeless_df, file = file_path_treeless, row.names = FALSE) # Write the data frame to a CSV file
   
   
   #Agroforestry (AF) System ####
@@ -368,7 +369,7 @@ AF_benefit <- function(x, varnames)
   Prime_timber_benefit <- rep(0, n_years)
   Other_timber_benefit <- rep(0, n_years)
   
-  Prime_timber_benefit[timber_harvest_indices] <-
+  Prime_timber_benefit[Prime_timber_harvest_indices] <-
     vv(Prime_timber_price, var_cv, length(Prime_timber_harvest_indices)) * Prime_timber_yield[Prime_timber_harvest_indices]
   Bioenergy_timber_benefit <- 
     vv(bioenergy_timber_price, var_cv, n_years) * Bioenergy_timber_yield
@@ -392,20 +393,26 @@ AF_benefit <- function(x, varnames)
   C_benefit <- vv(pc_carbon_storage, var_cv, n_years) * 
     AF_C_sequestration * arable_area_treeless
   
-  GW_benefit <- vv(pc_ground_water_recharge, var_cv, n_years) * arable_area_treeless
+  GW_benefit <- rep(0, n_years)
+  erosion_control_benefit <- rep(0, n_years)
+  # groundwater storage and erosion control not realised in the first few years 
+  #- can also make a variable and add vv fn.
+  NMES_indices <- seq(from = 5, to = n_years)
+  GW_benefit[NMES_indices] <-
+    vv(pc_ground_water_recharge, var_cv, length(NMES_indices)) * arable_area_treeless
   
-  erosion_control_benefit <- vv(soil_loss, var_cv, n_years) * 
-    vv(pc_soil_loss, var_cv, n_years) * arable_area_treeless  
+  erosion_control_benefit[NMES_indices] <- vv(soil_loss, var_cv, length(NMES_indices)) * 
+    vv(pc_soil_loss, var_cv, length(NMES_indices)) * arable_area_treeless  
   #pollinator_benefit yet to be added
   
-  Nonmarket_ES_benefit <-  Bioenergy_timber_benefit +
-    C_benefit + GW_benefit + erosion_control_benefit
+  Nonmarket_ES_benefit <- C_benefit + GW_benefit + erosion_control_benefit 
   
   # from Porter et al. 2009
   #Nonmarket_ES_benefit <- vv(Nonmarket_ES_value, var_cv, n_years) * tree_row_area
   
   AF_tree_benefit <- Pack_nuts_benefit + Oil_nuts_benefit + 
-    Prime_timber_benefit + Other_timber_benefit + Nonmarket_ES_benefit
+    Prime_timber_benefit + Other_timber_benefit + Bioenergy_timber_benefit +
+    Nonmarket_ES_benefit
   #Subsidy in AF system
   ES3_subsidy[1:n_years] <- es3_subsidy * tree_row_area
   
@@ -586,35 +593,35 @@ AF_benefit <- function(x, varnames)
   
   #CHECKPOINT!!
   # Create a data frame with the variables
-  results_AF_df <- data.frame(
-    n_years = n_years,
-    AF_total_cost= AF_total_cost,
-    AF_total_investment_cost = AF_total_investment_cost,
-    AF_total_running_cost = AF_total_running_cost,
-    AF_insurance = AF_insurance,
-    AF_total_running_cost = AF_total_running_cost,
-    AF_total_einkorn_cost = AF_total_einkorn_cost,
-    AF_total_wheat_cost = AF_total_wheat_cost,
-    AF_total_dinkel_cost = AF_total_dinkel_cost,
-    ES3_application = ES3_application,
-    AF_pruning = AF_pruning,
-    AF_root_pruning = AF_root_pruning,
-    AF_annual_irrigation_cost = AF_annual_irrigation_cost,
-    AF_mowing_treerow = AF_mowing_treerow,
-    AF_nuts_harvest = AF_nuts_harvest, 
-    AF_PPcost_nuts = AF_PPcost_nuts,
-    AF_total_benefit = AF_total_benefit,
-    AF_tree_benefit = AF_tree_benefit,
-    AF_einkorn_benefit = AF_einkorn_benefit,
-    AF_wheat_benefit = AF_wheat_benefit,
-    AF_dinkel_benefit = AF_dinkel_benefit,
-    ES3_subsidy = ES3_subsidy,
-    AF_chance_market_fluc =AF_chance_market_fluc,
-    AF_bottom_line_benefit = AF_bottom_line_benefit,
-    AF_bottom_line_benefit_farm = AF_bottom_line_benefit_farm
-  )
-  file_path_AF <- "calculated_AF_variables.csv"# Specify the file path to save the CSV
-  write.csv(results_AF_df, file = file_path_AF, row.names = FALSE)  # Write the data frame to a CSV file
+  # results_AF_df <- data.frame(
+  #   n_years = n_years,
+  #   AF_total_cost= AF_total_cost,
+  #   AF_total_investment_cost = AF_total_investment_cost,
+  #   AF_total_running_cost = AF_total_running_cost,
+  #   AF_insurance = AF_insurance,
+  #   AF_total_running_cost = AF_total_running_cost,
+  #   AF_total_einkorn_cost = AF_total_einkorn_cost,
+  #   AF_total_wheat_cost = AF_total_wheat_cost,
+  #   AF_total_dinkel_cost = AF_total_dinkel_cost,
+  #   ES3_application = ES3_application,
+  #   AF_pruning = AF_pruning,
+  #   AF_root_pruning = AF_root_pruning,
+  #   AF_annual_irrigation_cost = AF_annual_irrigation_cost,
+  #   AF_mowing_treerow = AF_mowing_treerow,
+  #   AF_nuts_harvest = AF_nuts_harvest, 
+  #   AF_PPcost_nuts = AF_PPcost_nuts,
+  #   AF_total_benefit = AF_total_benefit,
+  #   AF_tree_benefit = AF_tree_benefit,
+  #   AF_einkorn_benefit = AF_einkorn_benefit,
+  #   AF_wheat_benefit = AF_wheat_benefit,
+  #   AF_dinkel_benefit = AF_dinkel_benefit,
+  #   ES3_subsidy = ES3_subsidy,
+  #   AF_chance_market_fluc =AF_chance_market_fluc,
+  #   AF_bottom_line_benefit = AF_bottom_line_benefit,
+  #   AF_bottom_line_benefit_farm = AF_bottom_line_benefit_farm
+  # )
+  # file_path_AF <- "calculated_AF_variables.csv"# Specify the file path to save the CSV
+  # write.csv(results_AF_df, file = file_path_AF, row.names = FALSE)  # Write the data frame to a CSV file
 
   #Calculating NPVs and Cash Flows####
   #AF System
