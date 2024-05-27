@@ -873,16 +873,12 @@ ggsave(
   height = 3
 )
 
-#Value of Information Analysis using decisionSupport package
-mcSimulation_table <- data.frame(mcSimulation_results$x, mcSimulation_results$y[1:3])
-evpi <- multi_EVPI(mc = mcSimulation_table, first_out_var = "NPV_Agroforestry_System")
-plot_evpi(evpi, decision_vars = "NPV_Agroforestry_System")
 
 #Projection to Latent Structures (PLS) analysis
 # AF with intangibles
 pls_result_AF <- plsr.mcSimulation(object = mcSimulation_results,
                                 resultName = names(mcSimulation_results$y)[1], ncomp = 1)
-plot_pls(pls_result_AF, input_table = input_file, cut_off_line = 1, threshold = 0.5)
+plot_pls(pls_result_AF, input_table = input_file, cut_off_line = 1, threshold = 0.8)
 ggsave(
   filename = "images/PLS_VIP_AF.png",
   plot = last_plot(),
@@ -892,7 +888,7 @@ ggsave(
 #treeless
 pls_result_treeless <- plsr.mcSimulation(object = mcSimulation_results,
                                          resultName = names(mcSimulation_results$y)[2], ncomp = 1)
-plot_pls(pls_result_treeless, input_table = input_file, cut_off_line = 1, threshold = 0.5)
+plot_pls(pls_result_treeless, input_table = input_file, cut_off_line = 1, threshold = 0.8)
 ggsave(
   filename = "images/PLS_VIP_Treeless.png",
   plot = last_plot(),
@@ -902,12 +898,18 @@ ggsave(
 #AF without intangibles
 pls_result_AF_farm <- plsr.mcSimulation(object = mcSimulation_results,
                                 resultName = names(mcSimulation_results$y)[3], ncomp = 1)
-plot_pls(pls_result_AF_farm, input_table = input_file, cut_off_line = 1, threshold = 0.5)
+plot_pls(pls_result_AF_farm, input_table = input_file, cut_off_line = 1, threshold = 0.8)
 ggsave(
   filename = "images/PLS_VIP_AF_farmlevel.png",
   plot = last_plot(),
   width = 5, 
   height = 3
 )
+
+#Value of Information Analysis using decisionSupport package
+mcSimulation_table <- data.frame(mcSimulation_results$x, mcSimulation_results$y[4:5])
+evpi <- multi_EVPI(mc = mcSimulation_table, first_out_var = "NPVtrade_off")
+plot_evpi(evpi, decision_vars = "NPVtrade_off")
+
 
 #END!!!!##
