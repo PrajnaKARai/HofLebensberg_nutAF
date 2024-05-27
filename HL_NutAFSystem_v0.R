@@ -19,7 +19,7 @@ make_variables <- function(est,n=1)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir=.GlobalEnv)
 }
 
-make_variables(as.estimate(input_file)) #Works by randomly selecting values from each variable of the input table and storing them in the global environment.These fixed values are not the ones used later in the Monte Carlo simulation but serve the sole purpose of allowing to run parts of the model and thereby testing is part for part
+generated_variables <- make_variables(as.estimate(input_file)) #Works by randomly selecting values from each variable of the input table and storing them in the global environment.These fixed values are not the ones used later in the Monte Carlo simulation but serve the sole purpose of allowing to run parts of the model and thereby testing is part for part
 
 # From Marcos:
 # Modify the gomperty_yield function so that first_yield_estimate_percent is never equal or higher than second_yield_estimate_percent
@@ -63,43 +63,43 @@ AF_benefit <- function(x, varnames)
 {
   #System modulators ####
   #yield failure due to pests or diseases
-  chance_perc_crop_fail <-
-    chance_event(chance = chance_pest_diseases,
-                 value_if = value_if_pest_diseases,
-                 value_if_not = 1) # 20% chance that the event will occur and result in 90% failure
-  AF_chance_perc_crop_fail <-
-    chance_event(chance = chance_pest_diseases,
-                 value_if = af_value_if_pest_diseases,
-                 value_if_not = 1) # 20% chance that the event will occur and result in 10% failure, due to presence of beneficial insects and a more resistant system with AF
-  #yield failure due to weather events
-  chance_perc_weather_fail <-
-    chance_event(chance = chance_extreme_weather,
-                 value_if = value_if_extreme_weather,
-                 value_if_not = 1) # 20% chance that the event will occur and result in 70% failure
-  AF_chance_perc_weather_fail <-
-    chance_event(chance = chance_extreme_weather,
-                 value_if = af_value_if_extreme_weather,
-                 value_if_not = 1) # 20% chance that the event will occur and result in 10% failure
-  #risks of not harvesting timber -> institutional settings
-  AF_chance_timber_harvest_fail <-
-    chance_event(chance = chance_policy_timber_not_harvest,
-                 value_if = value_if_timber_not_harvest,
-                 value_if_not = 1) # 30% chance that the event will occur and result in 10% failure
-  #risk of market fluctuations - chance event is applied by year
-  market_fluc <- rep(0, n_years)
-  no_market_fluc <- rep(1, n_years)
-  # accounting fluctuations in market price of all products
-  market_fluc <- vv(per_market_price, var_CV = var_cv, n_years)
-  # accounting market falls, recession -> economically hard times
-  chance_market_fluc <-
-    chance_event(chance = chance_market_crash,
-                 value_if = market_fluc,
-                 value_if_not = no_market_fluc) # 10% chance that the event will occur and 
-                                                #result in use the value from vv function
-  AF_chance_market_fluc <-
-    chance_event(chance = chance_market_crash,
-                 value_if = market_fluc,
-                 value_if_not = no_market_fluc) #value_if_not = 1) # 10% chance that the event will occur and 
+  # chance_perc_crop_fail <-
+  #   chance_event(chance = chance_pest_diseases,
+  #                value_if = value_if_pest_diseases,
+  #                value_if_not = 1) # 20% chance that the event will occur and result in 90% failure
+  # AF_chance_perc_crop_fail <-
+  #   chance_event(chance = chance_pest_diseases,
+  #                value_if = af_value_if_pest_diseases,
+  #                value_if_not = 1) # 20% chance that the event will occur and result in 10% failure, due to presence of beneficial insects and a more resistant system with AF
+  # #yield failure due to weather events
+  # chance_perc_weather_fail <-
+  #   chance_event(chance = chance_extreme_weather,
+  #                value_if = value_if_extreme_weather,
+  #                value_if_not = 1) # 20% chance that the event will occur and result in 70% failure
+  # AF_chance_perc_weather_fail <-
+  #   chance_event(chance = chance_extreme_weather,
+  #                value_if = af_value_if_extreme_weather,
+  #                value_if_not = 1) # 20% chance that the event will occur and result in 10% failure
+  # #risks of not harvesting timber -> institutional settings
+  # AF_chance_timber_harvest_fail <-
+  #   chance_event(chance = chance_policy_timber_not_harvest,
+  #                value_if = value_if_timber_not_harvest,
+  #                value_if_not = 1) # 30% chance that the event will occur and result in 10% failure
+  # #risk of market fluctuations - chance event is applied by year
+  # market_fluc <- rep(0, n_years)
+  # no_market_fluc <- rep(1, n_years)
+  # # accounting fluctuations in market price of all products
+  # market_fluc <- vv(per_market_price, var_CV = var_cv, n_years)
+  # # accounting market falls, recession -> economically hard times
+  # chance_market_fluc <-
+  #   chance_event(chance = chance_market_crash,
+  #                value_if = market_fluc,
+  #                value_if_not = no_market_fluc) # 10% chance that the event will occur and 
+  #                                               #result in use the value from vv function
+  # AF_chance_market_fluc <-
+  #   chance_event(chance = chance_market_crash,
+  #                value_if = market_fluc,
+  #                value_if_not = no_market_fluc) #value_if_not = 1) # 10% chance that the event will occur and 
                                                 #result in use the value from vv function
   # Arable system is managed with crop rotation of einkorn(CCM)-Wheat-dinkel
   #one crop is grown once every 4 years
@@ -195,18 +195,18 @@ AF_benefit <- function(x, varnames)
   
   Treeless_einkorn_yield[einkorn_indices] <-
     vv(einkorn_yields, cv_einkorn_yield, length(einkorn_indices)) * arable_area_treeless 
-  Treeless_einkorn_benefit <- vv(einkorn_price, cv_einkorn_price, n_years) * Treeless_einkorn_yield * 
-    chance_perc_crop_fail * chance_perc_weather_fail
+  Treeless_einkorn_benefit <- vv(einkorn_price, cv_einkorn_price, n_years) * Treeless_einkorn_yield #* 
+    #chance_perc_crop_fail * chance_perc_weather_fail
   
   Treeless_wheat_yield[wheat_indices] <-
     vv(wheat_yields, cv_wheat_yield, length(wheat_indices)) * arable_area_treeless 
-  Treeless_wheat_benefit <- vv(wheat_price, cv_wheat_price, n_years) * Treeless_wheat_yield * 
-    chance_perc_crop_fail * chance_perc_weather_fail
+  Treeless_wheat_benefit <- vv(wheat_price, cv_wheat_price, n_years) * Treeless_wheat_yield #* 
+    #chance_perc_crop_fail * chance_perc_weather_fail
   
   Treeless_dinkel_yield[dinkel_indices] <-
     vv(dinkel_yields, cv_dinkel_yield, length(dinkel_indices)) * arable_area_treeless 
-  Treeless_dinkel_benefit <- vv(dinkel_price, cv_dinkel_price, n_years) * Treeless_dinkel_yield * 
-    chance_perc_crop_fail * chance_perc_weather_fail
+  Treeless_dinkel_benefit <- vv(dinkel_price, cv_dinkel_price, n_years) * Treeless_dinkel_yield #* 
+    #chance_perc_crop_fail * chance_perc_weather_fail
   
   #processing and packaging costs per ton - as yield data is required to calculate 
   #this parameter it is placed here in benefits
@@ -232,8 +232,8 @@ AF_benefit <- function(x, varnames)
   Treeless_total_arable_total_cost <- Treeless_total_einkorn_cost + Treeless_total_wheat_cost + 
     Treeless_total_dinkel_cost + PPcost_einkorn + PPcost_wheat + PPcost_dinkel + Treeless_insurance
 
-  Treeless_bottom_line_benefit <- (Treeless_total_benefit - Treeless_total_arable_total_cost) * 
-    chance_market_fluc
+  Treeless_bottom_line_benefit <- (Treeless_total_benefit - Treeless_total_arable_total_cost) #* 
+    #chance_market_fluc
   
   #CHECKPOINT!!
   # Create a data frame with the variables
@@ -282,19 +282,19 @@ AF_benefit <- function(x, varnames)
   #Crop rotation in AF system
   AF_einkorn_yield[einkorn_indices] <-
     vv(AF_einkorn_yields, cv_einkorn_yield, length(einkorn_indices)) *(1 - perc_yield_reduction[einkorn_indices]) * 
-    Arable_area_AF * AF_chance_perc_crop_fail * AF_chance_perc_weather_fail 
+    Arable_area_AF #* AF_chance_perc_crop_fail * AF_chance_perc_weather_fail 
   
   AF_einkorn_benefit <- vv(einkorn_price, cv_einkorn_price, n_years) * AF_einkorn_yield 
   
   AF_wheat_yield[wheat_indices] <-
     vv(AF_wheat_yields, cv_wheat_yield, length(wheat_indices)) * (1 - perc_yield_reduction[einkorn_indices]) *
-    Arable_area_AF * AF_chance_perc_crop_fail * AF_chance_perc_weather_fail
+    Arable_area_AF #* AF_chance_perc_crop_fail * AF_chance_perc_weather_fail
   
   AF_wheat_benefit <- vv(wheat_price, cv_wheat_price, n_years) * AF_wheat_yield
   
   AF_dinkel_yield[dinkel_indices] <-
     vv(AF_dinkel_yields, cv_dinkel_yield, length(dinkel_indices)) * (1 - perc_yield_reduction[einkorn_indices])* 
-    Arable_area_AF * AF_chance_perc_crop_fail * AF_chance_perc_weather_fail
+    Arable_area_AF #* AF_chance_perc_crop_fail * AF_chance_perc_weather_fail
   
   AF_dinkel_benefit <- vv(dinkel_price, cv_dinkel_price, n_years) * AF_dinkel_yield
   
@@ -316,7 +316,7 @@ AF_benefit <- function(x, varnames)
   
   #Yield of all nut trees [kg] considering risks
   AF_tot_nuts_yield <-
-    AF_nuts_yield * num_trees * AF_chance_perc_crop_fail * AF_chance_perc_weather_fail
+    AF_nuts_yield * num_trees #* AF_chance_perc_crop_fail * AF_chance_perc_weather_fail
   
   #Calculate how many kg have nuts quality and can therefore be marketed at a higher price (Pack_nuts) and 
   #the rest are used for making oil
@@ -341,8 +341,8 @@ AF_benefit <- function(x, varnames)
                                                      n_years = n_years,
                                                      no_yield_before_first_estimate = FALSE)
   #total timber yield considering risks
-  AF_tot_timber_yield <- AF_timber_yield * tree_row_area * (AF_chance_perc_crop_fail * 
-    AF_chance_perc_weather_fail * AF_chance_timber_harvest_fail)
+  AF_tot_timber_yield <- AF_timber_yield * tree_row_area #* (AF_chance_perc_crop_fail * 
+    #AF_chance_perc_weather_fail * AF_chance_timber_harvest_fail)
   # percentage of prime and other quality timber yield
   Pc_prime_timber <- vv(perc_prime_timber, var_CV = var_cv, n_years)
   Prime_timber_yield <- AF_tot_timber_yield * Pc_prime_timber
@@ -588,8 +588,8 @@ AF_benefit <- function(x, varnames)
   AF_total_cost <- AF_total_investment_cost + AF_total_running_cost + AF_insurance
   
   #Agroforestry output: system bottomline####
-  AF_bottom_line_benefit <- (AF_total_benefit - AF_total_cost)* AF_chance_market_fluc
-  AF_bottom_line_benefit_farm <- (AF_farm_benefit - AF_total_cost)* AF_chance_market_fluc
+  AF_bottom_line_benefit <- (AF_total_benefit - AF_total_cost) #* AF_chance_market_fluc
+  AF_bottom_line_benefit_farm <- (AF_farm_benefit - AF_total_cost) #* AF_chance_market_fluc
   
   #CHECKPOINT!!
   # Create a data frame with the variables
@@ -682,6 +682,11 @@ mcSimulation_results <- mcSimulation(
   model_function = AF_benefit,
   numberOfModelRuns = 10000,
   functionSyntax = "plainNames")
+
+# Print the output using make_variables function
+#print(generated_variables)
+
+write.csv(generated_variables, file = "variables_output.csv", row.names = FALSE)
 
 # PLOTS####
 # plot NPV distributions
@@ -878,7 +883,7 @@ ggsave(
 # AF with intangibles
 pls_result_AF <- plsr.mcSimulation(object = mcSimulation_results,
                                 resultName = names(mcSimulation_results$y)[1], ncomp = 1)
-plot_pls(pls_result_AF, input_table = input_file, cut_off_line = 1, threshold = 0.8)
+plot_pls(pls_result_AF, input_table = input_file, cut_off_line = 1, threshold = 0.5)
 ggsave(
   filename = "images/PLS_VIP_AF.png",
   plot = last_plot(),
@@ -888,7 +893,7 @@ ggsave(
 #treeless
 pls_result_treeless <- plsr.mcSimulation(object = mcSimulation_results,
                                          resultName = names(mcSimulation_results$y)[2], ncomp = 1)
-plot_pls(pls_result_treeless, input_table = input_file, cut_off_line = 1, threshold = 0.8)
+plot_pls(pls_result_treeless, input_table = input_file, cut_off_line = 1, threshold = 0.5)
 ggsave(
   filename = "images/PLS_VIP_Treeless.png",
   plot = last_plot(),
@@ -898,7 +903,7 @@ ggsave(
 #AF without intangibles
 pls_result_AF_farm <- plsr.mcSimulation(object = mcSimulation_results,
                                 resultName = names(mcSimulation_results$y)[3], ncomp = 1)
-plot_pls(pls_result_AF_farm, input_table = input_file, cut_off_line = 1, threshold = 0.8)
+plot_pls(pls_result_AF_farm, input_table = input_file, cut_off_line = 1, threshold = 0.5)
 ggsave(
   filename = "images/PLS_VIP_AF_farmlevel.png",
   plot = last_plot(),
